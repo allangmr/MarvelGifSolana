@@ -4,6 +4,7 @@ import idl from './idl.json';
 import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
 import { Program, Provider, web3 } from '@project-serum/anchor';
 import kp from './keypair.json'
+import twitterLogo from './assets/twitter-logo.svg';
 
 const { SystemProgram, Keypair } = web3;
 
@@ -18,6 +19,9 @@ const opts = {
   preflightCommitment: "processed"
 }
 
+// Constants
+const TWITTER_HANDLE = '_buildspace';
+const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 
 const App = () => {
 
@@ -190,10 +194,19 @@ const App = () => {
         <div className="header-container">
           <p className="header">🖼 Marvel Gifs</p>
           <p className="sub-text">
-            View your Marvel GIF collection ✨
+            Add your favorites Heroes of Marvel ✨
           </p>
           {!walletAddress && <RenderNotConnectedContainer />}
           {walletAddress && <RenderConnectedContainer />}
+        </div>
+        <div className="footer-container">
+          <img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
+          <a
+            className="footer-text"
+            href={TWITTER_LINK}
+            target="_blank"
+            rel="noreferrer"
+          >{`built on @${TWITTER_HANDLE}`}</a>
         </div>
       </div>
     </div>
