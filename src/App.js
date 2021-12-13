@@ -34,10 +34,7 @@ const App = () => {
       const { solana } = window;
       if (solana) {
         if (solana.isPhantom) {
-          console.log('Phantom wallet found!');
-
           const response = await solana.connect({ onlyIfTrusted: true });
-          console.log('Connected with Public Key:', response.publicKey.toString());
           setWalletAddress(response.publicKey.toString());
         }
       } else {
@@ -51,20 +48,14 @@ const App = () => {
   const connectWallet = async () => {
     const { solana } = window;
     const response = await solana.connect();
-    console.log('Connected with Public Key:', response.publicKey.toString());
     setWalletAddress(response.publicKey.toString());
   };
 
   const sendGif = async () => {
-    if (inputValue.length === 0) {
-      console.log('No gif link given!');
-    }
     setInputValue('')
-    console.log('Gif link:', inputValue);
     try {
       const provider = getProvider();
       const program = new Program(idl, programID, provider);
-      console.log(program.rpc);
       await program.rpc.addGif(inputValue, {
         accounts: {
           baseAccount: baseAccount.publicKey,
@@ -72,10 +63,9 @@ const App = () => {
         },
       });
 
-      console.log("GIF successfully sent to program", inputValue);
       await getGifList();
     } catch (error) {
-      console.log("Error sending GIF:", error);
+      console.error(error)
     }
 
   };
@@ -97,7 +87,6 @@ const App = () => {
     try {
       const provider = getProvider();
       const program = new Program(idl, programID, provider);
-      console.log("ping");
       await program.rpc.startStuffOff({
         accounts: {
           baseAccount: baseAccount.publicKey,
@@ -106,10 +95,9 @@ const App = () => {
         },
         signers: [baseAccount]
       });
-      console.log("Created a new BaseAccount w/ address:", baseAccount.publicKey.toString())
       await getGifList();
     } catch (error) {
-      console.log("Error creating BaseAccount account:", error)
+      console.error(error)
     }
   }
 
@@ -136,7 +124,6 @@ const App = () => {
           </form>
           <div className="gif-grid">
             {gifList.map((item, index) => {
-              console.log(gifList);
               if (item.gifLink.endsWith("gif")) {
                 return (
                   <div className="gif-item" key={index}>
@@ -172,20 +159,17 @@ const App = () => {
       const provider = getProvider();
       const program = new Program(idl, programID, provider);
       const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-      console.log("Got the account", account);
       setGifList(account.gifList);
     } catch (error) {
-      console.log("Error in getGifList: ", error)
+      console.error(error)
       setGifList(null);
     }
   }
 
   useEffect(() => {
     if (walletAddress) {
-      console.log('Fetching GIF list...');
       getGifList();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletAddress])
 
   return (
